@@ -110,7 +110,6 @@
 #         return render_template('UA.html', error='You are not authorized to view this page') 
 #     #User Authorization
 
-#     print("ID:", id) 
 #     if request.method == 'POST':
 #         title = request.form.get('title')
 #         author = request.form.get('author')

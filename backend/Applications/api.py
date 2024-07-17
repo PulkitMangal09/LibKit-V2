@@ -20,7 +20,6 @@ book_parser.add_argument('title', type=str, required=True, help="Title is requir
 book_parser.add_argument('author', type=str, required=True, help="Author is required")
 book_parser.add_argument('content', type=str, required=True, help="Content is required")
 book_parser.add_argument('image', type=str, required=True, help="Image is required")
-book_parser.add_argument('bs_id', type=int, required=True, help="Bookshelf ID is required")
 book_parser.add_argument('rating', type=int)
 
 class SectionAPI(Resource):
@@ -97,8 +96,8 @@ api.add_resource(SectionAPI, '/api/all_sections', '/api/create_section', '/api/<
 class BookAPI(Resource):
 
     @role_required('admin')
-    def get(self):
-        books = Books.query.all()
+    def get(self,id):
+        books = Books.query.filter_by(bs_id=id).all()
         all_books = {}
         i=1
         for book in books:
@@ -115,14 +114,14 @@ class BookAPI(Resource):
         return all_books
     
     @role_required('admin')
-    def post(self):
+    def post(self,id):
         args = book_parser.parse_args()
-        if not args['title'] or not args['author'] or not args['content'] or not args['image'] or not args['bs_id'] or not args['rating']:
+        if not args['title'] or not args['author'] or not args['content'] or not args['image']:
             return {'message': 'All fields are required'}, 400
         elif Books.query.filter_by(title=args['title']).first():
             return {'message': 'Book already exists'}, 400
         else:
-            book = Books(title=args['title'], author=args['author'], content=args['content'], image=args['image'], bs_id=args['bs_id'], rating=args['rating'])
+            book = Books(title=args['title'], author=args['author'], content=args['content'], image=args['image'], bs_id=id, rating=args['rating'])
             db.session.add(book)
             db.session.commit()
             return {'message': 'Book added successfully'}, 201
@@ -132,7 +131,7 @@ class BookAPI(Resource):
     def put(self, id):
         args = book_parser.parse_args()
         book = Books.query.filter_by(id=id).first()
-        if not args['title'] or not args['author'] or not args['content'] or not args['image'] or not args['bs_id'] or not args['rating']:
+        if not args['title'] or not args['author'] or not args['content'] or not args['image'] :
             return {'message': 'All fields are required'}, 400
         
         if not book:
@@ -142,8 +141,6 @@ class BookAPI(Resource):
             book.author = args['author']
             book.content = args['content']
             book.image = args['image']
-            book.bs_id = args['bs_id']
-            book.rating = args['rating']
             db.session.commit()
             return {'message': 'Book updated successfully'}, 200
         
@@ -162,7 +159,7 @@ class BookAPI(Resource):
 
 
 
-api.add_resource(BookAPI, '/api/all_books','/api/add_book','/api/<int:id>/update_book','/api/<int:id>/delete_book') # Equivalent to write api.add_resource(SesctionAPI, '/sections', app=app) in app.py
+api.add_resource(BookAPI, '/api/<int:id>/all_books','/api/<int:id>/add_book','/api/<int:id>/update_book','/api/<int:id>/delete_book') # Equivalent to write api.add_resource(SesctionAPI, '/sections', app=app) in app.py
 
 
 

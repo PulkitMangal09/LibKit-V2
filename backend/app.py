@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from Applications.database import db
 from Applications.api import api
 from flask_jwt_extended import JWTManager
@@ -21,6 +21,10 @@ def create_app():
     db.init_app(app) # Equivalent to write db = SQLAlchemy(app) in database.py
     init_app(app) # Equivalent to write api = Api(app) in api.py
     app.app_context().push()
+
+    @app.route('/static/images/<path:filename>')
+    def serve_image(filename):
+        return send_from_directory('static/images', filename)
 
     return app
 

@@ -17,7 +17,7 @@
         <div class="container">
           <h2>Manage Your Library Effortlessly with <span style="font-family: Zapfino; font-style: italic;">LibKit</span></h2>
           <p>A comprehensive solution to organize, track, and manage your library resources efficiently.</p>
-          <router-link to='/login' class="btn">Get Started</router-link>
+          <router-link to='/login' class="btn" style="color: white;" >Get Started</router-link>
         </div>
       </section>
   

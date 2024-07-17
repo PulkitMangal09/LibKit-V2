@@ -6,6 +6,7 @@ import AdminDash  from '@/views/AdminDash.vue'
 import AddSection from '@/views/AddSection.vue'
 import SectionView from '@/views/SectionView.vue'
 import UpdateSection from '@/views/UpdateSection.vue'
+import AddBook from '@/views/AddBook.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,6 +50,12 @@ const router = createRouter({
       path: '/update_section/:id',
       name: 'UpdateSection',
       component: UpdateSection
+    },
+
+    {
+      path: '/add_book/:id',
+      name: 'AddBook',
+      component: AddBook
     }
 
 

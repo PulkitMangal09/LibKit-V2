@@ -1,6 +1,6 @@
 <template>
     <div>
-        <AddBookNav :sectionId="sectionId" /> 
+        <AddBookNav :sectionId="bookId" /> 
       <br />
       <div class="container">
         <div class="box">
@@ -22,8 +22,8 @@
           </div>
           <div class="form-group">
             <div class="d-flex justify-content-end" style="margin-right: 65px;">
-              <button class="btn btn-outline cancel" @click="navigateTo('SectionView')">Cancel</button>
-              <button class="btn btn-outline add-section" @click="addBook">Add Book</button>
+              <button class="btn btn-outline cancel" @click="navigateTo('AdminDash')">Cancel</button>
+              <button class="btn btn-outline add-section" @click="updateBook">Update Book</button>
             </div>
           </div>
         </div>
@@ -43,9 +43,9 @@
   const content = ref('');
   const router = useRouter();
   const route = useRoute();
-  const sectionId = ref(route.params.id);
+  const bookId = ref(route.params.id);
   
-  const addBook = async () => {
+  const updateBook = async () => {
     if (!title.value || !author.value || !content.value) {
       alert('Please fill out all required fields.');
       return;
@@ -53,7 +53,7 @@
   
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`http://localhost:5000/api/${sectionId.value}/add_book`, {
+      const response = await axios.put(`http://localhost:5000/api/${bookId.value}/update_book`, {
         title: title.value,
         author: author.value,
         image: image.value, // Handle image upload if required
@@ -63,8 +63,8 @@
           Authorization: `Bearer ${token}`
         }
       });
-      // console.log(response.data);
-      navigateTo('SectionView');
+      console.log(response.data);
+      navigateTo('AdminDash');
     } catch (error) {
       if (error.response && error.response.status === 401) {
         router.push({ name: 'login' });

@@ -10,9 +10,9 @@
             <p style="text-indent: 100px;">Author: {{ book.author }}</p>
             <p style="text-indent: 100px;">Content: {{ book.content }}</p>
             <div style="margin-left: 290px;">
-              <button type="button" class="btn btn-outline-primary" @click="navigateToUpdateBook(book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">Update Book</button>
-              <button type="button" class="btn btn-outline" @click="navigateToDeleteBook(book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">Delete Book</button>
-              <button type="button" class="btn btn-outline" @click="navigateToIssuedUsers(book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">View Issued Users</button>
+              <button type="button" class="btn btn-outline-primary" @click="navigateTo('UpdateBook', book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">Update Book</button>
+              <button type="button" class="btn btn-outline" @click="deleteBook(book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">Delete Book</button>
+              <button type="button" class="btn btn-outline" @click="navigateTo(book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">View Issued Users</button>
             </div>
           </div>
         </div>
@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script setup >
+<script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
@@ -38,8 +38,31 @@ const handleImageError = (event) => {
   event.target.src = 'http://localhost:5000/static/images/default.jpg';
 };
 
+const deleteBook = async (id) => {
+  if (!confirm("Are you sure you want to delete this book?")) {
+    return; // Cancel deletion if user clicks Cancel in confirmation dialog
+  }
+  
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.delete(`http://localhost:5000/api/${id}/delete_book`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    alert(response.data.message); // Display success message
+    await fetchBooks(); // Refresh book list after deletion
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      router.push({ name: 'login' });
+    } else {
+      console.error('Error deleting book:', error);
+      alert('Failed to delete book.'); // Display error message
+    }
+  }
+};
 
-onMounted(async () => {
+const fetchBooks = async () => {
   try {
     const token = localStorage.getItem('token');
     const response = await axios.get(`http://localhost:5000/api/${id.value}/all_books`, {
@@ -50,15 +73,24 @@ onMounted(async () => {
     books.value = Object.values(response.data);
   } catch (error) {
     if (error.response && error.response.status === 401) {
-        router.push({ name: 'login' });
-      } else {
-        console.error(error);
-      }
+      router.push({ name: 'login' });
+    } else {
+      console.error(error);
+    }
   }
-});
+};
 
+onMounted(fetchBooks);
 
+const navigateTo = (routeName, id = null) => {
+  if (id) {
+    router.push({ name: routeName, params: { id } });
+  } else {
+    router.push({ name: routeName });
+  }
+};
 </script>
+
 
 <style scoped>
     .shop-section {

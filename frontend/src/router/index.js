@@ -7,6 +7,7 @@ import AddSection from '@/views/AddSection.vue'
 import SectionView from '@/views/SectionView.vue'
 import UpdateSection from '@/views/UpdateSection.vue'
 import AddBook from '@/views/AddBook.vue'
+import UpdateBook from '@/views/UpdateBook.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +57,12 @@ const router = createRouter({
       path: '/add_book/:id',
       name: 'AddBook',
       component: AddBook
+    },
+
+    {
+      path: '/update_book/:id',
+      name: 'UpdateBook',
+      component: UpdateBook
     }
 
 

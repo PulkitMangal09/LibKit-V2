@@ -44,6 +44,12 @@
   const searchQuery = ref('');
   
   const deleteSection = async (id) => {
+
+    if (!confirm("Are you sure you want to delete this section?")) {
+    return; // Cancel deletion if user clicks Cancel in confirmation dialog
+  }
+
+
   try {
     const token = localStorage.getItem('token');
     const response = await axios.delete(`http://localhost:5000/api/${id}/delete_section`, {
@@ -55,8 +61,12 @@
     // Optionally, update section list or navigate back to AdminDash
     navigateTo('AdminDash');
   } catch (error) {
-    console.error('Error deleting section:', error);
-    alert('Failed to delete section.'); // Display error message
+    if (error.response && error.response.status === 401) {
+        router.push({ name: 'login' });
+      } else {
+        console.error('Error deleting section:', error);
+        alert('Failed to delete section.'); // Display error message
+      }
   }
 };
 

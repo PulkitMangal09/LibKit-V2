@@ -4,7 +4,7 @@
     <div class="shop-section">
       <div v-for="(book, index) in books" :key="index" class="box1 box">
         <div class="box-content">
-            <img :src="getImageUrl(book.image)" alt="No Image Available" @error="handleImageError">
+          <img :src="getImageUrl(book.image)" alt="No Image Available" @error="handleImageError">
           <div class="text-container">
             <h4 style="text-indent: 100px;">{{ book.title }}</h4>
             <p style="text-indent: 100px;">Author: {{ book.author }}</p>

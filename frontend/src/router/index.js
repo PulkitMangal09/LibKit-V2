@@ -8,6 +8,7 @@ import SectionView from '@/views/SectionView.vue'
 import UpdateSection from '@/views/UpdateSection.vue'
 import AddBook from '@/views/AddBook.vue'
 import UpdateBook from '@/views/UpdateBook.vue'
+import UserDash from '@/views/UserDash.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,8 +64,15 @@ const router = createRouter({
       path: '/update_book/:id',
       name: 'UpdateBook',
       component: UpdateBook
-    }
+    },
 
+    // User Dashboard Starts
+
+    {
+      path: '/user_dash',
+      name: 'UserDash',
+      component: UserDash
+    }
 
   ]
 })

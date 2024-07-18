@@ -95,6 +95,7 @@ api.add_resource(SectionAPI, '/api/all_sections', '/api/create_section', '/api/<
 
 class BookAPI(Resource):
 
+
     @role_required('admin')
     def get(self,id):
         books = Books.query.filter_by(bs_id=id).all()

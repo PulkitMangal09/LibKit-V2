@@ -50,7 +50,7 @@
           Authorization: `Bearer ${token}`
         }
       });
-      console.log(response.data);
+      // console.log(response.data);
       router.push('/admin_dash');
     } catch (error) {
     if (error.response && error.response.status === 401) {

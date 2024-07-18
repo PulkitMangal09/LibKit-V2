@@ -118,7 +118,7 @@
 #     return render_template('search.html', books=books,search=search)
 
         
-from Applications.models import User
+from Applications.models import User, Books, Section
 from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from Applications.database import db
@@ -179,12 +179,26 @@ def init_routes(app):
         return jsonify({'message': 'User registered successfully'})
 
 
-    @app.route('/admin', methods=['GET'])
-    @role_required('admin')
-    def admin_only_route():
-        return jsonify({'message': 'Welcome Admin'})
-
     @app.route('/user', methods=['GET'])
-    @role_required('user')
-    def user_only_route():
-        return jsonify({'message': 'Welcome User'})
+    @jwt_required()
+    def user():
+        identity = get_jwt_identity()
+        print(identity['type'])
+        books=Books.query.all()
+        all_books={}
+        i=1
+        for book in books:
+            section=Section.query.get(book.bs_id)
+            this_book={}
+            this_book['id']=book.id
+            this_book['title']=book.title
+            this_book['author']=book.author
+            this_book['content']=book.content
+            this_book['image']=book.image
+            this_book['bs_id']=book.bs_id
+            this_book['rating']=book.rating
+            this_book['section']=section.title
+            all_books[f'book_{i}']=this_book
+            i+=1
+        return jsonify(all_books)
+    

@@ -22,7 +22,7 @@
           </div>
           <div class="form-group">
             <div class="d-flex justify-content-end" style="margin-right: 65px;">
-              <button class="btn btn-outline cancel" @click="navigateTo('AdminDash')">Cancel</button>
+              <button class="btn btn-outline cancel" @click="cancelUpdate">Cancel</button>
               <button class="btn btn-outline add-section" @click="updateBook">Update Book</button>
             </div>
           </div>
@@ -44,6 +44,7 @@
   const router = useRouter();
   const route = useRoute();
   const bookId = ref(route.params.id);
+  const sectionId = ref('');
   
   const updateBook = async () => {
     if (!title.value || !author.value || !content.value) {
@@ -63,8 +64,8 @@
           Authorization: `Bearer ${token}`
         }
       });
-      console.log(response.data);
-      navigateTo('AdminDash');
+      sectionId.value = response.data.section_id;
+      navigateTo('SectionView',sectionId.value);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         router.push({ name: 'login' });
@@ -73,10 +74,25 @@
       }
     }
   };
+
+
+  const cancelUpdate = () => {
+  if (sectionId.value) {
+    router.push({ name: 'SectionView', params: { id: sectionId.value } });
+  } else {
+    // If sectionId is not available, redirect to a default or previous route
+    router.push({ name: 'AdminDash' });
+  }
+};
+
   
-  const navigateTo = (routeName) => {
+  const navigateTo = (routeName, id = null) => {
+  if (id) {
+    router.push({ name: routeName, params: { id } });
+  } else {
     router.push({ name: routeName });
-  };
+  }
+};
   </script>
   
   <style scoped>

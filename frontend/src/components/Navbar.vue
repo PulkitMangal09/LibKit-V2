@@ -4,7 +4,7 @@
 
       <router-link to='/'  class="brand-logo">
 
-        <h1 class="brand-name">LibKit</h1>
+        <h1 class="brand-name" style="font-family: Zapfino; font-style: italic; ">LibKit </h1>
 
     </router-link>
       <nav>
@@ -32,8 +32,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1300px;
+  margin: 4px auto;
   padding: 0 20px;
 }
 

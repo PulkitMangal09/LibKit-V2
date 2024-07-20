@@ -118,7 +118,7 @@
 #     return render_template('search.html', books=books,search=search)
 
         
-from Applications.models import User, Books, Section
+from Applications.models import User, Books, Section, Request, Feedback
 from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from Applications.database import db
@@ -202,3 +202,192 @@ def init_routes(app):
             i+=1
         return jsonify(all_books)
     
+#Book Cycle Starts => Borrow Book => Pending Rquest => Approve Request => Return Book => Book Available Again
+
+    @app.route('/userborrow/<int:id>', methods=['GET']) #Borrow Button Clicked
+    @jwt_required()
+    def borrow_book(id):
+        user_id=get_jwt_identity()['id']
+        book=Books.query.get(id)
+
+        accepted_books_count=Request.query.filter_by(user_id=user_id, status='approved').count()
+        if accepted_books_count >= 5:
+            return jsonify({'message': 'You have already accepted five books. Please return a book to request another one'}), 400
+
+        data=Request.query.all()
+        if data:
+            for i in data:
+                if i.user_id==user_id and i.status=='pending' and i.book_id==id:
+                    return jsonify({'message': 'You have already requested this book and it is pending approval. Please wait for the admin to approve your request.'}), 400
+                if i.user_id==user_id and i.status=='approved' and i.book_id==id:
+                    return jsonify({'message': 'You have already requested this book and it is pending return. Please return the book to request another one.'}), 400
+
+        
+        new_request=Request(user_id=user_id, book_id=id)
+        db.session.add(new_request)
+        db.session.commit()
+        return jsonify({'message': 'Request submitted. Please wait for approval'})
+      
+    
+    @app.route('/user_pending_requests', methods=['GET']) #show all requests
+    @jwt_required()
+    def pending_requests():
+        user_id = get_jwt_identity()['id']
+        requests = Request.query.filter_by(user_id=user_id).all()
+        all_requests = []
+        for request in requests:
+            book = Books.query.get(request.book_id)
+            section = Section.query.get(book.bs_id)
+            this_request = {
+                'id': request.id,
+                'status': request.status,
+                'book_title': book.title,
+                'book_author': book.author,
+                'section': section.title
+            }
+            all_requests.append(this_request)
+        return jsonify(all_requests)
+
+    
+
+    @app.route('/admin_pending_requests', methods=['GET']) #Admin Dashboard Pending Page shows all the pending requests
+    @role_required('admin')
+    def admin_pending_request():
+        requests=Request.query.filter_by(status='pending').all()
+        all_requests={}
+        i=1
+        for request in requests:
+            user=User.query.get(request.user_id)
+            book=Books.query.get(request.book_id)
+            section=Section.query.get(book.bs_id)
+            this_request={}
+            this_request['id']=request.id
+            this_request['status']=request.status
+            this_request['user_name']=user.name
+            this_request['book_title']=book.title
+            this_request['book_author']=book.author
+            this_request['section']=section.title
+            all_requests[f'request_{i}']=this_request
+            i+=1
+        return jsonify(all_requests)
+    
+
+    @app.route('/admin_approve/<int:id>', methods=['GET']) #Admin Dashboard Approve Button Clicked
+    @role_required('admin')
+    def admin_approve_button(id):
+
+        request=Request.query.get(id)
+        user_id=request.user_id
+        #Check if user has already accepted 5 books
+        accepted_books_count=Request.query.filter_by(user_id=user_id, status='approved').count()
+        if accepted_books_count >= 5:
+            return jsonify({'message': 'User has already accepted five books. Cannot approve new request.'}), 400
+
+        new_feedback=Feedback(borrow_user_id=user_id, book_id=request.book_id)
+        db.session.add(new_feedback)
+
+        request.status='approved'
+        db.session.commit()
+        return jsonify({'message': 'Request approved successfully'})
+    
+
+    @app.route('/admin_reject/<int:id>', methods=['GET']) #Admin Reject Button Clicked
+    @role_required('admin')
+    def admin_reject(id):
+        request=Request.query.get(id)
+        request.status='rejected'
+        db.session.commit()
+        return jsonify({'message': 'Request rejected successfully'})
+
+
+    @app.route('/user_approved_books', methods=['GET'])
+    @jwt_required()
+    def approved_requests():
+        user_id = get_jwt_identity()['id']
+        requests = Request.query.filter_by(user_id=user_id, status='approved').all()
+        all_requests = []
+        for request in requests:
+            book = Books.query.get(request.book_id)
+            section = Section.query.get(book.bs_id)
+            this_request = {
+                'id': request.id,
+                'title': book.title,
+                'author': book.author,
+                'content': book.content,
+                'section': section.title,
+                'image': book.image  # Assuming you have this field
+            }
+            all_requests.append(this_request)
+        return jsonify(all_requests)
+
+    
+
+    @app.route('/return_book/<int:id>', methods=['GET']) #Return Button Clicked
+    @jwt_required()
+    def return_book(id):
+
+        request=Request.query.get(id)
+        feedback=Feedback.query.filter_by(book_id=request.book_id , borrow_user_id=get_jwt_identity()['id']).first()
+        feedback.phase='returned'
+        request.status='return'
+        db.session.delete(request)
+        db.session.commit()
+        return jsonify({'message': 'Book returned successfully'})  #User will go to feedback page after returning the book
+    
+
+    
+
+    @app.route('/admin_approve_books', methods=['GET']) #Admin Dashboard Approved Book View
+    @role_required('admin')
+    def admin_approve_books():
+        requests=Request.query.filter_by(status='approved').all()
+        all_requests=[]
+        for request in requests:
+            user=User.query.get(request.user_id)
+            book=Books.query.get(request.book_id)
+            section=Section.query.get(book.bs_id)
+            this_request={
+            'id':request.id,
+            'user_id':request.user_id,
+            'status':request.status,
+            'user_name':user.name,
+            'book_title':book.title,
+            'book_author':book.author,
+            'section':section.title
+          
+            }
+            all_requests.append(this_request)
+
+        return jsonify(all_requests)
+    
+
+    @app.route('/admin_rejected_books', methods=['GET']) #Admin Dash Rejected Books View
+    @role_required('admin')
+    def admin_rejected_books():
+        requests=Request.query.filter_by(status='rejected').all()
+        all_requests={}
+        i=1
+        for request in requests:
+            user=User.query.get(request.user_id)
+            book=Books.query.get(request.book_id)
+            section=Section.query.get(book.bs_id)
+            this_request={}
+            this_request['id']=request.id
+            this_request['status']=request.status
+            this_request['user_name']=user.name
+            this_request['book_title']=book.title
+            this_request['book_author']=book.author
+            this_request['section']=section.title
+            all_requests[f'request_{i}']=this_request
+            i+=1
+        return jsonify(all_requests)
+    
+    @app.route('/revoke/<int:id>', methods=['GET']) #Revoke Button Clicked
+    @role_required('admin')
+    def revoke(id):
+        request=Request.query.get(id)
+        feedback=Feedback.query.filter_by(book_id=request.book_id, borrow_user_id=request.user_id).first()
+        feedback.phase='revoked'
+        request.status='returned'
+        db.session.commit()
+        return jsonify({'message': 'Request revoked successfully'})

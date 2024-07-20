@@ -3,7 +3,7 @@
       <nav class="navbar navbar-default" style="background-color: #7FC7D9; padding: 0px;">
         <div class="container-fluid">
           <div class="navbar-header">
-            <router-link class="navbar-brand" :to="{ name: 'AdminDash' }" style="font-size: 28px;">
+            <router-link class="navbar-brand" :to="{ name: 'UserDash' }" style="font-size: 28px; margin-left: 30px;">
               <span style="font-family: Zapfino; font-style: italic; color: white"><strong>LibKit</strong></span>
             </router-link>
           </div>
@@ -16,9 +16,8 @@
           <ul class="nav navbar-nav navbar-right">
             <li>
               <div class="btn-group">
-                <button class="btn navbar-btn" @click="navigateTo('AdminDash')" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color: white">Home</button>
-                <button class="btn btn-outline navbar-btn" @click="navigateTo('AddSection')" style="border-radius: 5px;">Add Section</button>
-                <button class="btn btn-outline navbar-btn" @click="navigateTo('Requests')" style="border-radius: 5px;">Requests</button>
+                <button class="btn btn-outline navbar-btn" @click="navigateTo('UserDash')" style=" border-radius: 5px; ">All Books</button>
+                <button class="btn  navbar-btn" @click="navigateTo('MyBooks')" style="border-radius: 5px; background-color: #3887BE; margin-right: 30px; color: white">My Books</button>
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('GeneralStats')" style="border-radius: 5px;">Stats</button>
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('login')" style="border-radius: 5px;">Logout</button>
               </div>

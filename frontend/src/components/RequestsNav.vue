@@ -16,14 +16,13 @@
           <ul class="nav navbar-nav navbar-right">
             <li>
               <div class="btn-group">
-                <button class="btn navbar-btn" @click="navigateTo('AdminDash')" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color: white">Home</button>
-                <button class="btn btn-outline navbar-btn" @click="navigateTo('AddSection')" style="border-radius: 5px;">Add Section</button>
-                <button class="btn btn-outline navbar-btn" @click="navigateTo('Requests')" style="border-radius: 5px;">Requests</button>
+                <button class="btn btn-outline  navbar-btn" @click="navigateTo('AdminDash')" style=" border-radius: 5px; ">Home</button>
+                <button class="btn btn-outline navbar-btn" @click="navigateTo('Requests')" style="border-radius: 5px; background-color: #3887BE; margin-right: 30px; color: white">Requests</button>
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('GeneralStats')" style="border-radius: 5px;">Stats</button>
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('login')" style="border-radius: 5px;">Logout</button>
               </div>
             </li>
-          </ul>
+          </ul> 
         </div>
       </nav>
     </header>

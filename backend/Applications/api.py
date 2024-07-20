@@ -132,6 +132,7 @@ class BookAPI(Resource):
     def put(self, id):
         args = book_parser.parse_args()
         book = Books.query.filter_by(id=id).first()
+        section_id=book.bs_id
         if not args['title'] or not args['author'] or not args['content'] or not args['image'] :
             return {'message': 'All fields are required'}, 400
         
@@ -143,7 +144,7 @@ class BookAPI(Resource):
             book.content = args['content']
             book.image = args['image']
             db.session.commit()
-            return {'message': 'Book updated successfully'}, 200
+            return {'message': 'Book updated successfully','section_id': section_id}, 200
         
 
     @role_required('admin')

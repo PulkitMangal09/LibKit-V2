@@ -58,7 +58,6 @@
             email: email.value,
             password: password.value
         });
-        console.log(response.data);
         router.push('/login');
 
     }

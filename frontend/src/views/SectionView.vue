@@ -18,6 +18,9 @@
         </div>
       </div>            
     </div>
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
   </div>
 </template>
 
@@ -31,6 +34,7 @@ const route = useRoute();
 const router = useRouter();
 const id = ref(route.params.id);
 const books = ref([]);
+const errorMessage = ref('');
 
 const getImageUrl = (image) => `http://localhost:5000/static/images/${image}`;
 
@@ -71,6 +75,11 @@ const fetchBooks = async () => {
       }
     });
     books.value = Object.values(response.data);
+    if (Object.values(response.data).length === 0) {
+      errorMessage.value = 'No Books found';
+    } else {
+      errorMessage.value = '';
+    }
   } catch (error) {
     if (error.response && error.response.status === 401) {
       router.push({ name: 'login' });
@@ -136,5 +145,20 @@ const navigateTo = (routeName, id = null) => {
         flex-direction: column;
         justify-content: space-between;
     }
+
+    
+.error-message {
+  position: fixed;
+  left: 50%;
+  margin-top: 300px;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  width: fit-content;
+  color: #721c24;
+  font: 2em sans-serif;
+}
+
 
 </style>

@@ -13,6 +13,7 @@ import MyBooks from '@/views/MyBooks.vue'
 import Requests from '@/views/Requests.vue'
 import UserApprovedView from '@/views/UserApprovedView.vue'
 import AdminApprovedBooks from '@/views/AdminApprovedBooks.vue'
+import AdminRejectedView from '@/views/AdminRejectedView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -106,6 +107,13 @@ const router = createRouter({
       path: '/admin_approved_books',
       name : 'AdminApprovedBooks',
       component: AdminApprovedBooks
+    },
+
+    // admin rejected view
+    {
+      path: '/admin_rejected_books',
+      name : 'AdminRejectedView',
+      component: AdminRejectedView
     }
 
 

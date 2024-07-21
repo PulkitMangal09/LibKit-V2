@@ -11,7 +11,7 @@
           <router-link :to="{ name: 'AdminApprovedBooks' }" class="nav-link">Approved Requests</router-link>
         </li>
         <li class="nav-item">
-          <router-link :to="{ name: 'AdminDash' }" class="nav-link">Rejected Requests</router-link>
+          <router-link :to="{ name: 'AdminRejectedView' }" class="nav-link">Rejected Requests</router-link>
         </li>
       </ul>
   
@@ -161,10 +161,7 @@
     margin: 0 10px;
   }
   
-  .nav-link.active {
-    font-weight: bold;
-    color: #007bff;
-  }
+
   
   .alert {
     max-width: 600px;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+ <div>
     <UserNav />
     
     <main class="main">
@@ -7,16 +7,21 @@
       <section class="book-grid">
         <article class="book" v-for="(book, index) in books" :key="book.id">
           <div class="book-content">
-            <img :src="getImageUrl(book.image)" alt="No Image Available" @error="handleImageError">
-            <div class="book-info">
-              <h3>{{ book.title }}</h3>
+            <div class="image-container">
+              <img :src="getImageUrl(book.image)" alt="No Image Available" @error="handleImageError">
+            </div>
+            <div class="text-container">
+              <h4>{{ book.title }}</h4>
               <p>by {{ book.author }}</p>
               <p>{{ book.section }}</p>
+              <div class="rating">
+                <span v-for="star in getStarRating(book.rating)" :key="star" class="star">&#9733;</span>
+              </div>
+            </div>
+            <div class="button-container">
+              <button type="button" class="btn btn-outline-info" @click="borrowBook(book.id)">Borrow Book</button>
             </div>
           </div>  
-          <div class="button">
-            <button type="button" class="btn btn-outline-info" @click="borrowBook(book.id)">Borrow Book</button>
-          </div>
         </article>
       </section>
     </main>
@@ -98,87 +103,131 @@ const borrowBook = async (id) => {
     }
   }
 };
+
+const getStarRating = (rating) => {
+  const stars = [];
+  for (let i = 0; i < rating; i++) {
+    stars.push(i);
+  }
+  return stars;
+};
+
 </script>
 
 <style scoped>
-body {
-  font-family: 'Roboto', sans-serif;
+html, body {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  background-color: #f7f7f7;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
 }
 
 .main {
-  font-family: 'Roboto', sans-serif;
+  flex: 1;
   padding: 20px;
-  background-color: #f7f7f7;
+  background-color: #f8f9fa;
+ 
 }
 
 .book-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 47px;
-  margin-left: 20px;
-  margin-right: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 20px;
+  justify-content: center;
 }
 
 .book {
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  width: calc(33.333% - 60px);
+  background-color: white;
+  border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: space-between;
+  min-height: 450px;
 }
 
 .book:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.book img {
+.book-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  flex: 1;
+}
+
+.image-container {
+  width: 50%;
+  height: 250px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container img {
   width: 100%;
-  height: auto;
-  max-height: 300px;
+  height: 100%;
   object-fit: cover;
+  border-radius: 8px;
 }
 
-.book-info {
-  padding: 15px;
+.text-container {
   text-align: center;
+  margin-top: 15px;
 }
 
-.book-info h3 {
-  font-size: 20px;
-  margin: 0 0 10px;
+.text-container h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
   color: #333;
 }
 
-.book-info p {
-  margin: 5px 0;
-  color: #777;
+.text-container p {
+  font-size: 1rem;
+  margin: 0.25rem 0;
+  color: #666;
 }
 
-.button {
+.rating {
+  margin-top: 10px 0;
+}
+
+.star {
+  color: #f1c40f;
+  font-size: 1.5rem;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
   margin-top: auto;
-  width: 100%;
 }
 
-.button button {
-  width: 100%;
-  padding: 10px;
-  border: none;
+.btn {
+  padding: 10px 20px;
+  font-size: 0.875rem;
   background-color: #007bff;
-  color: white;
-  font-size: 16px;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  border-radius: 0 0 10px 10px;
+  transition: background-color 0.3s;
 }
 
-.button button:hover {
+.btn:hover {
   background-color: #0056b3;
 }
 
@@ -204,4 +253,17 @@ body {
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+
+@media (max-width: 768px) {
+  .book {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .book {
+    width: 100%;
+  }
+}
 </style>
+

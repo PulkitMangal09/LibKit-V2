@@ -22,6 +22,13 @@ book_parser.add_argument('content', type=str, required=True, help="Content is re
 book_parser.add_argument('image', type=str, required=True, help="Image is required")
 book_parser.add_argument('rating', type=int)
 
+
+# Feedback API parser
+feedback_parser = reqparse.RequestParser()
+feedback_parser.add_argument('rating', type=int, required=True, help="Rating is required")
+
+
+
 class SectionAPI(Resource):
 
     @role_required('admin')
@@ -162,6 +169,36 @@ class BookAPI(Resource):
 
 
 api.add_resource(BookAPI, '/api/<int:id>/all_books','/api/<int:id>/add_book','/api/<int:id>/update_book','/api/<int:id>/delete_book') # Equivalent to write api.add_resource(SesctionAPI, '/sections', app=app) in app.py
+
+
+class FeedbackAPI(Resource):
+    @jwt_required()
+    def post(self, id):
+        user_id = get_jwt_identity()['id']
+        args = feedback_parser.parse_args()
+        feedback_rating = args['rating']
+        
+        feedback = Feedback.query.filter_by(book_id=id, borrow_user_id=user_id).first()
+        
+        feedback.feedback = feedback_rating
+        db.session.commit()
+        
+        # Update the book rating
+        book = Books.query.get(id)
+        feedbacks = Feedback.query.filter_by(book_id=id,phase='returned').all()
+        total_rating = 0
+        for feedback in feedbacks:
+            total_rating += feedback.feedback
+        book.rating = round(total_rating / len(feedbacks), 2)
+
+
+        db.session.commit()
+        return {'message': 'Feedback submitted successfully'}, 200
+
+
+
+api.add_resource(FeedbackAPI, '/api/feedback/<int:id>')
+
 
 
 

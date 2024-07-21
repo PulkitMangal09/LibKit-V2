@@ -14,7 +14,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///LibKit.sqlite3'
     app.config['JWT_SECRET_KEY']='super-secret' # Change this in your code
     jwt=JWTManager(app)
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "*"}})
     
     # Set the upload folder configuration
     app.config['UPLOAD_FOLDER'] = 'C:\\Users\\pulki\\OneDrive\\Documents\\MAD 1 Proj\\static\\images'

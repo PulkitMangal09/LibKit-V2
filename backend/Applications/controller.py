@@ -124,6 +124,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from Applications.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from flask_cors import cross_origin
 
 def role_required(role):
     def decorator(func):
@@ -136,7 +137,6 @@ def role_required(role):
             return func(*args, **kwargs)
         return wrapper
     return decorator
-
 
 
 def init_routes(app):
@@ -300,7 +300,7 @@ def init_routes(app):
         return jsonify({'message': 'Request rejected successfully'})
 
 
-    @app.route('/user_approved_books', methods=['GET'])
+    @app.route('/user_approved_books', methods=['GET'])  #User Dashboard Approved Book View
     @jwt_required()
     def approved_requests():
         user_id = get_jwt_identity()['id']
@@ -327,12 +327,13 @@ def init_routes(app):
     def return_book(id):
 
         request=Request.query.get(id)
+        book_id=request.book_id
         feedback=Feedback.query.filter_by(book_id=request.book_id , borrow_user_id=get_jwt_identity()['id']).first()
         feedback.phase='returned'
         request.status='return'
         db.session.delete(request)
         db.session.commit()
-        return jsonify({'message': 'Book returned successfully'})  #User will go to feedback page after returning the book
+        return jsonify({'message': 'Book returned successfully', 'book_id':book_id })  #User will go to feedback page after returning the book
     
 
     
@@ -365,29 +366,34 @@ def init_routes(app):
     @role_required('admin')
     def admin_rejected_books():
         requests=Request.query.filter_by(status='rejected').all()
-        all_requests={}
+        all_requests=[]
         i=1
         for request in requests:
             user=User.query.get(request.user_id)
             book=Books.query.get(request.book_id)
             section=Section.query.get(book.bs_id)
-            this_request={}
-            this_request['id']=request.id
-            this_request['status']=request.status
-            this_request['user_name']=user.name
-            this_request['book_title']=book.title
-            this_request['book_author']=book.author
-            this_request['section']=section.title
-            all_requests[f'request_{i}']=this_request
-            i+=1
+            this_request={
+            'id':request.id,
+            'status':request.status,
+            'user_name':user.name,
+            'book_title':book.title,
+            'book_author':book.author,
+            'section':section.title
+           
+            }
+
+            all_requests.append(this_request)
         return jsonify(all_requests)
     
     @app.route('/revoke/<int:id>', methods=['GET']) #Revoke Button Clicked
     @role_required('admin')
+   
     def revoke(id):
         request=Request.query.get(id)
         feedback=Feedback.query.filter_by(book_id=request.book_id, borrow_user_id=request.user_id).first()
         feedback.phase='revoked'
         request.status='returned'
+        db.session.delete(request)
         db.session.commit()
         return jsonify({'message': 'Request revoked successfully'})
+    

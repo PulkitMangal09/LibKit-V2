@@ -8,11 +8,19 @@
             </router-link>
           </div>
           <div class="container-fluid col-md-3" style="margin-left: 300px;">
-            <form class="d-flex" role="search" @submit.prevent="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="searchQuery">
-              <button type="submit">Filter</button>
-            </form>
-          </div>
+    <div class="search-container">
+      <input
+        class="form-control me-2"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+        v-model="searchQuery"
+      />
+      <button class="searchButton" type="submit">
+        <img src="@/assets/searchImage.png" alt="Search" />
+      </button>
+    </div>
+  </div>
           <ul class="nav navbar-nav navbar-right">
             <li>
               <div class="btn-group">
@@ -60,5 +68,36 @@
     background-color: #3887BE;
     color: #fff;
   }
+
+  .search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.search-container input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  border-radius: 4px 0 0 4px;
+}
+
+.search-container button {
+  background-color: #ffb84d; /* Orange background */
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 4px 4px 0;
+}
+
+.search-container button img {
+  width: 20px; /* Adjust size as needed */
+  height: 16px; /* Adjust size as needed */
+}
   </style>
   

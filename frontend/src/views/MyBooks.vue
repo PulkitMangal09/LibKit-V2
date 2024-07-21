@@ -6,7 +6,7 @@
           <router-link :to="{ name: 'MyBooks' }" class="nav-link" active-class="active">Requests</router-link>
         </li>
         <li class="nav-item">
-          <router-link :to="{ name: 'UserApprovedView' }" class="nav-link" active-class="active">Approved Books</router-link>
+          <router-link :to="{ name: 'UserApprovedView' }" class="nav-link" >Approved Books</router-link>
         </li>
       </ul>
   
@@ -95,6 +95,12 @@
     font-size: 1.1rem;
     margin: 0 10px;
   }
+
+  .nav-link.active {
+  color: #495057;
+  background-color: #e9ecef;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
   
   .container {
     margin-top: 20px;

@@ -17,6 +17,11 @@
         <p style="text-align:center">Description: {{ section.description }}</p>
       </div>
     </div>
+
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
   </div>
 </template>
 
@@ -28,6 +33,7 @@ import { useRouter } from 'vue-router';
 
 const sections = ref([]);
 const router = useRouter();
+const errorMessage = ref('');
 
 const getImageUrl = (image) => `http://localhost:5000/static/images/${image}`;
 
@@ -50,6 +56,13 @@ const fetchData = async () => {
       }
     });
     sections.value = response.data;
+    if(Object.values(response.data).length === 0) {
+      errorMessage.value = 'No sections found';
+    }
+    else {
+      errorMessage.value = '';
+    }
+
   } catch (error) {
     if (error.response && error.response.status === 401) {
       router.push({ name: 'login' });
@@ -116,4 +129,19 @@ const goToSection = (id) => {
   justify-content: center;
   align-items: center;
 }
+
+.error-message {
+  position: fixed;
+  left: 50%;
+  margin-top: 300px;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  width: fit-content;
+  color: #721c24;
+  font: 2em sans-serif;
+}
+
+
 </style>

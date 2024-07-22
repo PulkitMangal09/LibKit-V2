@@ -1,8 +1,8 @@
 <template>
  <div>
     <UserNav />
-    
     <main class="main">
+      <carousel />
       <br>
       <section class="book-grid">
         <article class="book" v-for="(book, index) in books" :key="book.id">
@@ -37,6 +37,7 @@
 
 <script setup>
 import UserNav from '@/components/UserNav.vue';
+import carousel from '@/components/carousel.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
@@ -45,6 +46,7 @@ const books = ref([]);
 const router = useRouter();
 const successMessage = ref('');
 const errorMessage = ref('');
+
 
 const getImageUrl = (image) => `http://localhost:5000/static/images/${image}`;
 
@@ -111,6 +113,7 @@ const getStarRating = (rating) => {
   }
   return stars;
 };
+
 
 </script>
 
@@ -265,5 +268,6 @@ body {
     width: 100%;
   }
 }
+
 </style>
 

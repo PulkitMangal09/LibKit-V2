@@ -7,7 +7,7 @@
               <span style="font-family: Zapfino; font-style: italic; color: white"><strong>LibKit</strong></span>
             </router-link>
           </div>
-          <div class="container-fluid col-md-3" style="margin-left: 340px;">
+          <div class="container-fluid col-md-3" style="margin-left: 300px;">
             <form class="d-flex" role="search" @submit.prevent="search">
               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="searchQuery">
               <button type="submit">Filter</button>
@@ -16,9 +16,10 @@
           <ul class="nav navbar-nav navbar-right">
             <li>
               <div class="btn-group">
-                <button class="btn  btn-outline navbar-btn" @click="navigateTo('AdminDash')" style=" border-radius: 5px; ">Home</button>
-                <button class="btn navbar-btn" @click="navigateTo('AddSection')" style="background-color: #3887BE;  border-radius: 5px;margin-right: 30px; color:white ">Add Section</button>
-                <button class="btn btn-outline navbar-btn" @click="navigateTo('PendingRequests')" style="border-radius: 5px;">Requests</button>
+                <button class="btn btn-outline  navbar-btn" @click="navigateTo('AdminDash')" style=" border-radius: 5px; ">Home</button>
+                <button class="btn btn-outline navbar-btn" @click="navigateTo('AddSection')" style="border-radius: 5px;">Add Section</button>
+                <button class="btn btn-outline navbar-btn" @click="navigateTo('Requests')" style="border-radius: 5px;">Requests</button>
+                <button class="btn navbar-btn" @click="navigateTo('GeneralStats')" style="border-radius: 5px; background-color: #3887BE; margin-right: 30px;color: white">Stats</button>
                 <button class="btn btn-outline navbar-btn" @click="logout" style="border-radius: 5px;">Logout</button>
               </div>
             </li>
@@ -42,10 +43,13 @@
       search() {
         console.log('Searching for:', this.searchQuery);
       },
+
       logout () {
         localStorage.removeItem('token');
         this.$router.push({ name: 'login' });
       }
+
+
     }
   };
   </script>

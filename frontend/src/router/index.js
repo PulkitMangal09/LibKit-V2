@@ -14,6 +14,8 @@ import Requests from '@/views/Requests.vue'
 import UserApprovedView from '@/views/UserApprovedView.vue'
 import AdminApprovedBooks from '@/views/AdminApprovedBooks.vue'
 import AdminRejectedView from '@/views/AdminRejectedView.vue'
+import SearchView from '@/views/SearchView.vue'
+import GeneralStats from '@/views/GeneralStats.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -114,8 +116,21 @@ const router = createRouter({
       path: '/admin_rejected_books',
       name : 'AdminRejectedView',
       component: AdminRejectedView
-    }
+    },
 
+    // search view
+    {
+      path: '/search',
+      name : 'SearchView',
+      component: SearchView
+    },
+
+    // general stats
+    {
+      path: '/stats',
+      name : 'GeneralStats',
+      component: GeneralStats
+    },
 
 
   ]

@@ -19,7 +19,7 @@
                 <button class="btn  btn-outline navbar-btn" @click="navigateTo('AdminDash')" style=" border-radius: 5px; ">Home</button>
                 <button class="btn btn-outline  navbar-btn" @click="navigateTo('UpdateSection',sectionId)" style=" border-radius: 5px;">Update Section</button>
                 <button class="btn btn-outline navbar-btn" @click="deleteSection(sectionId)" style="border-radius: 5px;">Delete Section</button>
-                <button class="btn btn-outline navbar-btn" @click="navigateTo('login')" style="border-radius: 5px;">Logout</button>
+                <button class="btn btn-outline navbar-btn" @click="logout" style="border-radius: 5px;">Logout</button>
               </div>
             </li>
           </ul>
@@ -42,6 +42,11 @@
   });
   
   const searchQuery = ref('');
+
+  const logout = () => {
+  localStorage.removeItem('token');
+  router.push({ name: 'login' });
+};
   
   const deleteSection = async (id) => {
   try {

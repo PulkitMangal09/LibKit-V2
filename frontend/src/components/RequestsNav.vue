@@ -19,7 +19,7 @@
                 <button class="btn btn-outline  navbar-btn" @click="navigateTo('AdminDash')" style=" border-radius: 5px; ">Home</button>
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('Requests')" style="border-radius: 5px; background-color: #3887BE; margin-right: 30px; color: white">Requests</button>
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('GeneralStats')" style="border-radius: 5px;">Stats</button>
-                <button class="btn btn-outline navbar-btn" @click="navigateTo('login')" style="border-radius: 5px;">Logout</button>
+                <button class="btn btn-outline navbar-btn" @click="logout" style="border-radius: 5px;">Logout</button>
               </div>
             </li>
           </ul> 
@@ -41,6 +41,10 @@
       },
       search() {
         console.log('Searching for:', this.searchQuery);
+      },
+      logout () {
+        localStorage.removeItem('token');
+        this.$router.push({ name: 'login' });
       }
     }
   };

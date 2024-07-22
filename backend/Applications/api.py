@@ -1,6 +1,7 @@
 from flask_restful import Api, Resource,reqparse
 from Applications.models import *
 from Applications.controller import *
+from Applications.extraRouters import er_init_routes
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from Applications.controller import init_routes
 import datetime
@@ -207,3 +208,4 @@ api.add_resource(FeedbackAPI, '/api/feedback/<int:id>')
 def init_app(app):
     api.init_app(app) # Equivalent to write api = Api(app) in app.py
     init_routes(app) # Equivalent to write from Applications.controller import init_routes in app.py
+    er_init_routes(app) # Equivalent to write from Applications.extraRouters import er_init_routes in app.py

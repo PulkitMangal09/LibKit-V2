@@ -20,7 +20,7 @@
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('AddSection')" style="border-radius: 5px;">Add Section</button>
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('Requests')" style="border-radius: 5px;">Requests</button>
                 <button class="btn btn-outline navbar-btn" @click="navigateTo('GeneralStats')" style="border-radius: 5px;">Stats</button>
-                <button class="btn btn-outline navbar-btn" @click="navigateTo('login')" style="border-radius: 5px;">Logout</button>
+                <button class="btn btn-outline navbar-btn" @click="logout" style="border-radius: 5px;">Logout</button>
               </div>
             </li>
           </ul>
@@ -42,7 +42,13 @@
       },
       search() {
         console.log('Searching for:', this.searchQuery);
+      },
+
+      logout () {
+        localStorage.removeItem('token');
+        this.$router.push({ name: 'login' });
       }
+      
     }
   };
   </script>

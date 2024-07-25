@@ -57,7 +57,7 @@
     })
     .catch(error => {
       console.log(error);
-      router.push('/login');
+      router.push({ name: 'UAView' });
     });
   });
   </script>

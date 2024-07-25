@@ -79,7 +79,7 @@
       main_data.value = Object.values(response.data);
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        router.push({ name: 'login' });
+        router.push({ name: 'UAView' });
       } else {
         error.value = 'An error occurred. Please try again later.';
         console.error(err);

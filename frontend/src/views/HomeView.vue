@@ -1,13 +1,15 @@
 <template>
     <div>
-      <header>
+      <header class="navbar-header" style="padding: 13px 0;">
         <div class="container">
-          <a href="#" @click.prevent="reloadPage"><h1><span style="font-family: Zapfino; font-style: italic;">LibKit</span></h1></a>
+          <a href="#" @click.prevent="reloadPage" class="brand-logo">
+            <h1 class="brand-name"><span style="font-family: Zapfino; font-style: italic;">LibKit</span></h1>
+          </a>
           <nav>
-            <ul>
-              <li><a href="#features" @click.prevent="scrollToSection('features')">Features</a></li>
-              <li><a href="#about" @click.prevent="scrollToSection('about')">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+            <ul class="nav-list" style="display: flex;">
+              <li class="nav-item"><a href="#features" @click.prevent="scrollToSection('features')" class="nav-link">Features</a></li>
+              <li class="nav-item"><a href="#about" @click.prevent="scrollToSection('about')" class="nav-link">About</a></li>
+              <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
           </nav>
         </div>
@@ -71,7 +73,7 @@
   }
   </script>
   
-  <style>
+  <style >
   /* Reset CSS */
   * {
     margin: 0;
@@ -86,11 +88,12 @@
   }
   
   .container {
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 0 20px;
   }
-  
+
+
   /* Header Styles */
   header {
     background-color: #7FC7D9;

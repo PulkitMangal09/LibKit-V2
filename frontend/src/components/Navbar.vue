@@ -24,7 +24,7 @@
 <style scoped>
  .navbar-header {
   background-color:#7FC7D9;
-  padding: 10px 0;
+  padding: 19px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -32,9 +32,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1300px;
-  margin: 4px auto;
-  padding: 0 20px;
+  max-width: 1280px;
+  margin: 0 120px;
+  padding: 0 0px;
+  
 }
 
 .brand-logo {
@@ -46,6 +47,7 @@
   font-style: italic; */
   color: #fff;
   text-decoration: none;
+  font-size: 28px;
 }
 
 .nav-list {

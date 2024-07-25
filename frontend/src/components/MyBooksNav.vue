@@ -100,6 +100,7 @@ const fetchResults = async () => {
   border: none;
   padding: 10px;
   border-radius: 4px 0 0 4px;
+  width: 300px;
 }
 
 .search-container button {
@@ -115,6 +116,6 @@ const fetchResults = async () => {
 
 .search-container button img {
   width: 20px; /* Adjust size as needed */
-  height: 16px; /* Adjust size as needed */
+  height: 17px; /* Adjust size as needed */
 }
 </style>

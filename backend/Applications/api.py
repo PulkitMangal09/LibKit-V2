@@ -4,6 +4,7 @@ from Applications.controller import *
 from Applications.extraRouters import er_init_routes
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from Applications.controller import init_routes
+from Applications.config import cache
 import datetime
 
 api=Api() # Equivalent to write api = Api(app) in app.py
@@ -33,7 +34,7 @@ feedback_parser.add_argument('rating', type=int, required=True, help="Rating is 
 class SectionAPI(Resource):
 
     @role_required('admin')
-
+    @cache.cached(timeout=50)
     def get(self): # post, put, delete
         sections = Section.query.all()
         all_sections = {}
@@ -62,6 +63,7 @@ class SectionAPI(Resource):
             section = Section(title=args['title'], date=formatted_date, image=args['image'], description=args['description'])
             db.session.add(section)
             db.session.commit()
+            cache.clear()
             return {'message': 'Section added successfully'}, 201
         
     @role_required('admin')
@@ -80,6 +82,7 @@ class SectionAPI(Resource):
             section.image = args['image']
             section.description = args['description']
             db.session.commit()
+            cache.clear()
             return {'message': 'Section updated successfully'}, 200
         
     
@@ -91,6 +94,7 @@ class SectionAPI(Resource):
         else:
             db.session.delete(section)
             db.session.commit()
+            cache.clear()
             return {'message': 'Section deleted successfully'}, 200
 
 
@@ -105,6 +109,7 @@ class BookAPI(Resource):
 
 
     @role_required('admin')
+    @cache.cached(timeout=50)
     def get(self,id):
         books = Books.query.filter_by(bs_id=id).all()
         all_books = {}
@@ -133,6 +138,7 @@ class BookAPI(Resource):
             book = Books(title=args['title'], author=args['author'], content=args['content'], image=args['image'], bs_id=id, rating=args['rating'])
             db.session.add(book)
             db.session.commit()
+            cache.clear()
             return {'message': 'Book added successfully'}, 201
         
 
@@ -152,6 +158,7 @@ class BookAPI(Resource):
             book.content = args['content']
             book.image = args['image']
             db.session.commit()
+            cache.clear()
             return {'message': 'Book updated successfully','section_id': section_id}, 200
         
 
@@ -163,6 +170,7 @@ class BookAPI(Resource):
         else:
             db.session.delete(book)
             db.session.commit()
+            cache.clear()
             return {'message': 'Book deleted successfully'}, 200
 
 

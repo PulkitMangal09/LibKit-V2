@@ -41,6 +41,7 @@ import UserNav from '@/components/UserNav.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import router from '@/router';
 
 const books = ref([]);
 const route = useRoute();
@@ -62,6 +63,7 @@ const fetchData = async () => {
     books.value = response.data;
   } catch (error) {
     console.error(error);
+    router.push({ name: 'UAView' });
   }
 };
 
@@ -91,7 +93,7 @@ const borrowBook = async (id) => {
   } catch (error) {
     if (error.response) {
       if (error.response.status === 401) {
-        router.push({ name: 'login' });
+        router.push({ name: 'UAView' });
       } else {
         errorMessage.value = error.response.data.message;
         setTimeout(() => {

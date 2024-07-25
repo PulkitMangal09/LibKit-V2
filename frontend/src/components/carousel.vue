@@ -1,55 +1,58 @@
 <template>
-        <div v-for="(book, index) in top_books" :key="index" class="slide" v-show="currentIndex === index">
-            <img src="@/assets/BP_slide.png" @error="handleImageError" alt="Book Cover" />
+        <div class="slide" >
+            <img src="@/assets/BP_slide.png" alt="Book Cover" />
             <div class="slide-content">
-              <h2 class="book-title">{{ book.title }}</h2>
-              <p class="book-author">by {{ book.author }}</p>
+              <h2 class="book-title"> BLACKPINK - Rolling Stone Magazine </h2>
+              <p class="book-author">by BLACKPINK</p>
               <div class="rating">
-                <span v-for="star in getStarRating(book.rating)" :key="star" class="star">★</span>
+                <span v-for="star in getStarRating(5)" :key="star" class="star">★</span>
               </div>
               <p class="hot-book">Trending on LibKit</p>
             </div>
         </div>
   </template>
+
+
+<!-- v-for="(book, index) in top_books" :key="index" class="slide" v-show="currentIndex === index" -->
   
   <script setup>
-  import { ref, onMounted } from 'vue';
-  import axios from 'axios';
-  import { useRouter } from 'vue-router';
+  // import { ref, onMounted } from 'vue';
+  // // import axios from 'axios';
+  // import { useRouter } from 'vue-router';
   
-  const top_books = ref([]);
-  const currentIndex = ref(0);
-  const router = useRouter();
+  // const top_books = ref([]);
+  // const currentIndex = ref(0);
+  // const router = useRouter();
     
-  const handleImageError = (event) => {
-    event.target.src = 'http://localhost:5000/static/images/default.jpg';
-  };
+  // const handleImageError = (event) => {
+  //   event.target.src = 'http://localhost:5000/static/images/default.jpg';
+  // };
   
   const getStarRating = (rating) => {
     return Array.from({ length: Math.round(rating) }, (_, i) => i);
   };
   
-  const topBooks = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/top_books', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      top_books.value = response.data;
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        router.push({ name: 'login' });
-      } else {
-        console.error(error);
-      }
-    }
-  };
+  //const topBooks = async () => {
+   // try {
+   //   const token = localStorage.getItem('token');
+    //  const response = await axios.get('http://localhost:5000/top_books', {
+   //     headers: {
+   //       Authorization: `Bearer ${token}`
+   //     }
+   //   });
+   //   top_books.value = response.data;
+   // } catch (error) {
+   //   if (error.response && error.response.status === 401) {
+   //     router.push({ name: 'login' });
+   //   } else {
+    //    console.error(error);
+    //  }
+  //  }
+ // };
   
-  onMounted(() => {
-    topBooks();
-  });
+ // onMounted(() => {
+   // topBooks();
+ // });
   </script>
   
   <style scoped>

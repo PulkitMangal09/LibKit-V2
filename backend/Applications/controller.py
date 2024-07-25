@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from Applications.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from Applications.config import cache
 
 def role_required(role):
     def decorator(func):
@@ -59,6 +60,7 @@ def init_routes(app):
 
 
     @app.route('/user', methods=['GET'])
+    @cache.cached(timeout=50)
     @jwt_required()
     def user():
         identity = get_jwt_identity()
@@ -105,10 +107,12 @@ def init_routes(app):
         new_request=Request(user_id=user_id, book_id=id)
         db.session.add(new_request)
         db.session.commit()
+        cache.clear()
         return jsonify({'message': 'Request submitted. Please wait for approval'})
       
     
     @app.route('/user_pending_requests', methods=['GET']) #show all requests
+    @cache.cached(timeout=50)
     @jwt_required()
     def pending_requests():
         user_id = get_jwt_identity()['id']
@@ -130,6 +134,7 @@ def init_routes(app):
     
 
     @app.route('/admin_pending_requests', methods=['GET']) #Admin Dashboard Pending Page shows all the pending requests
+    @cache.cached(timeout=50)
     @role_required('admin')
     def admin_pending_request():
         requests=Request.query.filter_by(status='pending').all()
@@ -167,6 +172,7 @@ def init_routes(app):
 
         request.status='approved'
         db.session.commit()
+        cache.clear()
         return jsonify({'message': 'Request approved successfully'})
     
 
@@ -176,10 +182,12 @@ def init_routes(app):
         request=Request.query.get(id)
         request.status='rejected'
         db.session.commit()
+        cache.clear()
         return jsonify({'message': 'Request rejected successfully'})
 
 
     @app.route('/user_approved_books', methods=['GET'])  #User Dashboard Approved Book View
+    @cache.cached(timeout=50)
     @jwt_required()
     def approved_requests():
         user_id = get_jwt_identity()['id']
@@ -212,12 +220,14 @@ def init_routes(app):
         request.status='return'
         db.session.delete(request)
         db.session.commit()
+        cache.clear()
         return jsonify({'message': 'Book returned successfully', 'book_id':book_id })  #User will go to feedback page after returning the book
     
 
     
 
     @app.route('/admin_approve_books', methods=['GET']) #Admin Dashboard Approved Book View
+    @cache.cached(timeout=50)
     @role_required('admin')
     def admin_approve_books():
         requests=Request.query.filter_by(status='approved').all()
@@ -242,6 +252,7 @@ def init_routes(app):
     
 
     @app.route('/admin_rejected_books', methods=['GET']) #Admin Dash Rejected Books View
+    @cache.cached(timeout=50)
     @role_required('admin')
     def admin_rejected_books():
         requests=Request.query.filter_by(status='rejected').all()
@@ -274,6 +285,7 @@ def init_routes(app):
         request.status='returned'
         db.session.delete(request)
         db.session.commit()
+        cache.clear()
         return jsonify({'message': 'Request revoked successfully'})
 
     
@@ -309,6 +321,7 @@ def init_routes(app):
     #Showing stats on Admin Dashboard
 
     @app.route('/stats', methods=['GET'])
+    @cache.cached(timeout=50)
     @role_required('admin')
     def stats():
         total_books = Books.query.count()
@@ -326,4 +339,3 @@ def init_routes(app):
             'total_rejected_requests': total_rejected_requests
         })
 
-    

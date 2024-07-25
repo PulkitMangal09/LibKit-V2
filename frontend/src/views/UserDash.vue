@@ -70,9 +70,10 @@ const fetchData = async () => {
     books.value = response.data;
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      router.push({ name: 'login' });
+      router.push({ name: 'UAView' });
     } else {
       console.error(error);
+      router.push({ name: 'UAView' });
     }
   }
 };

@@ -3,7 +3,7 @@
       <nav class="navbar navbar-default" style="background-color: #7FC7D9; padding: 0px;">
         <div class="container-fluid">
           <div class="navbar-header">
-            <router-link class="navbar-brand" :to="{ name: 'AdminDash' }" style="font-size: 28px;">
+            <router-link class="navbar-brand" :to="{ name: 'AdminDash' }" style="font-size: 28px; margin-left: 30px;">
               <span style="font-family: Zapfino; font-style: italic; color: white"><strong>LibKit</strong></span>
             </router-link>
           </div>

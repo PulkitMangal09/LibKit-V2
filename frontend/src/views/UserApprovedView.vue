@@ -12,7 +12,7 @@
     </ul>
 
     <div class="shop-section">
-      <div v-for="(item, index) in mainData" :key="index" class="box1 box">
+      <div v-for="(item, index) in mainData" :key="index" class="box1 box" >
         <div class="box-content">
           <div class="image-container">
             <img 
@@ -24,13 +24,23 @@
           <div class="text-container">
             <h4>{{ item.title }}</h4>
             <p>Author: {{ item.author }}</p>
-            <p>Content: 
+            <!-- <p>Content: 
                   <a :href="item.content" target="_blank">
                         {{ item.content }}
                     </a>
-                </p>
+                </p> -->
           </div>
           <div class="button-container">
+
+            <button 
+              type="button" 
+              class="bookDetails" 
+              @click="showBookDetail(item)"
+            >
+              View Book
+            </button>
+
+
             <button 
               type="button" 
               class="btn btn-outline-warning" 
@@ -42,6 +52,15 @@
         </div>
       </div>
     </div>
+
+
+    <!-- Book Detail Modal -->
+    <BookDetailModal 
+      :visible="isDetailModalVisible" 
+      :book="selectedBook" 
+      @close="closeBookDetailModal"
+    />
+
 
     <!-- Confirmation Modal -->
     <ConfirmationModal 
@@ -78,6 +97,7 @@
 import MyBooksNav from '@/components/MyBooksNav.vue';
 import ConfirmationModal from '@/components/ConfirmationModal.vue';
 import RatingModal from '@/components/RatingModal.vue'; // Import the Rating Modal
+import BookDetailModal from '@/components/BookDetailModal.vue'; // Import the Book Detail Modal
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
@@ -88,7 +108,9 @@ const error = ref('');
 const router = useRouter();
 const isModalVisible = ref(false);
 const isRatingModalVisible = ref(false); // State for rating modal visibility
+const isDetailModalVisible = ref(false); // State for detail modal visibility
 const bookToReturn = ref(null);
+const selectedBook = ref(null); // State for selected book data
 const bookIdForRating = ref(null); // Book ID to be used for submitting rating
 const successMessage = ref('');
 const errorMessage = ref('');
@@ -113,10 +135,11 @@ const fetchData = async () => {
     }
   } catch (err) {
     if (err.response && err.response.status === 401) {
-      router.push({ name: 'login' });
+      router.push({ name: 'UAView' });
     } else {
       error.value = 'An error occurred while fetching data';
       console.error(err);
+      router.push({ name: 'UAView' });
     }
   }
 };
@@ -151,6 +174,15 @@ const handleCancel = () => {
 
 const closeRatingModal = () => {
   isRatingModalVisible.value = false;
+};
+
+const showBookDetail = (book) => {
+  selectedBook.value = book;
+  isDetailModalVisible.value = true;
+};
+
+const closeBookDetailModal = () => {
+  isDetailModalVisible.value = false;
 };
 
 const submitRating = async (rating) => {
@@ -200,6 +232,9 @@ const returnBook = async (id) => {
     setTimeout(() => {
       errorMessage.value = '';
     }, 3000);
+    if (err.response && err.response.status === 401) {
+      router.push({ name: 'UAView' });
+    }
   }
 };
 
@@ -338,6 +373,15 @@ onMounted(fetchData);
   z-index: 1000;
   width: fit-content;
   font: 1em sans-serif;
+}
+
+.bookDetails{
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8.5px 10px;
+  margin-right: 5px;
 }
 
 </style>

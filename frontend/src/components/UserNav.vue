@@ -64,6 +64,7 @@ const fetchResults = async () => {
 
   } catch (error) {
     console.error(error);
+    router.push({ name: 'UAView' });
   }
 };
 
@@ -101,6 +102,7 @@ const logout = () => {
   border: none;
   padding: 10px;
   border-radius: 4px 0 0 4px;
+  width: 300px;
 }
 
 .search-container button {

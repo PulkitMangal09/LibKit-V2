@@ -8,7 +8,7 @@
           <div class="text-container">
             <h4 style="text-indent: 100px;">{{ book.title }}</h4>
             <p style="text-indent: 100px;">Author: {{ book.author }}</p>
-            <p style="text-indent: 100px;">Content: {{ book.content }}</p>
+            <p class="sectionviewbook" style="text-indent: 100px;">Content: {{ book.content }}</p>
             <div style="margin-left: 290px;">
               <button type="button" class="btn btn-outline-primary" @click="navigateTo('UpdateBook', book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">Update Book</button>
               <button type="button" class="btn btn-outline" @click="deleteBook(book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">Delete Book</button>
@@ -58,7 +58,7 @@ const deleteBook = async (id) => {
     await fetchBooks(); // Refresh book list after deletion
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      router.push({ name: 'login' });
+      router.push({ name: 'UAView' });
     } else {
       console.error('Error deleting book:', error);
       alert('Failed to delete book.'); // Display error message
@@ -82,7 +82,7 @@ const fetchBooks = async () => {
     }
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      router.push({ name: 'login' });
+      router.push({ name: 'UAView' });
     } else {
       console.error(error);
     }
@@ -140,6 +140,13 @@ const navigateTo = (routeName, id = null) => {
     .box p {
         margin-bottom: 15px;
     }
+
+    .sectionviewbook{
+      text-overflow: ellipsis;
+      white-space: nowrap;
+  overflow: hidden;
+    }
+
     .box {
         display: flex;
         flex-direction: column;

@@ -1,10 +1,8 @@
 from flask import Flask, send_from_directory
 from Applications.database import db
-from Applications.api import api
-from flask_jwt_extended import JWTManager
-from flask_cors import CORS
+from Applications.api import api, init_app
+from Applications.config import jwt, cache, cors
 from werkzeug.security import generate_password_hash
-from Applications.api import init_app
 
 app = None
 
@@ -13,11 +11,22 @@ def create_app():
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///LibKit.sqlite3'
     app.config['JWT_SECRET_KEY']='super-secret' # Change this in your code
-    jwt=JWTManager(app)
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    jwt.init_app(app)
+    cors.init_app(app, resources={r"/*": {"origins": "*"}})
     
     # Set the upload folder configuration
     app.config['UPLOAD_FOLDER'] = 'C:\\Users\\pulki\\OneDrive\\Documents\\MAD 1 Proj\\static\\images'
+
+    # Set the cache configuration
+
+    # app.config['CACHE_TYPE'] = 'RedisCache'
+    # app.config['CACHE_DEFAULT_TIMEOUT'] = 300
+    # app.config['CACHE_REDIS_PORT'] = 6379
+    # app.config['DEBUG'] = True
+    cache.init_app(app, config={'CACHE_TYPE': 'RedisCache', 'CACHE_DEFAULT_TIMEOUT': 300, 'CACHE_REDIS_PORT': 6379, 'DEBUG': True})
+
+    # Initialize the cache
+
     db.init_app(app) # Equivalent to write db = SQLAlchemy(app) in database.py
     init_app(app) # Equivalent to write api = Api(app) in api.py
     app.app_context().push()

@@ -4,14 +4,17 @@ from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from Applications.database import db
 from functools import wraps
+from Applications.config import cache
+import datetime
 
 
 def er_init_routes(app):
 
-    @app.route('/check', methods=['GET'])
-    @jwt_required()
-    def check():
-        return jsonify({'message': 'Working'})
+    @app.route('/cache')
+    @cache.cached(timeout=50)
+    def get_cached_time():
+        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        return jsonify({'cached_time': current_time})
     
     @app.route('/top_books', methods=['GET'])
     def top_books():

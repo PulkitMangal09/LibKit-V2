@@ -16,6 +16,7 @@ import AdminApprovedBooks from '@/views/AdminApprovedBooks.vue'
 import AdminRejectedView from '@/views/AdminRejectedView.vue'
 import SearchView from '@/views/SearchView.vue'
 import GeneralStats from '@/views/GeneralStats.vue'
+import UAView from '@/views/UAView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -131,6 +132,13 @@ const router = createRouter({
       name : 'GeneralStats',
       component: GeneralStats
     },
+
+    // UA View
+    {
+      path: '/auth_failed',
+      name : 'UAView',
+      component: UAView
+    }
 
 
   ]

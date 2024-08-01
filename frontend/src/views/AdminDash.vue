@@ -50,6 +50,11 @@ onMounted(async () => {
 const fetchData = async () => {
   try {
     const token = localStorage.getItem('token');
+    //check if token is available
+    if (!token) {
+      router.push({ name: 'UAView' });
+    }
+
     const response = await axios.get('http://localhost:5000/api/all_sections', {
       headers: {
         Authorization: `Bearer ${token}`

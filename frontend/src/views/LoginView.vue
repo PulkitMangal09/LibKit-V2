@@ -37,6 +37,12 @@
   const alertType = ref('');
 
   const submitLogin = async () => {
+    //check if the fields are empty
+    if (!username.value || !password.value) {
+      showAlert('Please fill in all the fields', 'alert-danger');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:5000/login', {
         username: username.value,

@@ -7,7 +7,8 @@
     </div>
   </template>
   
-  <script setup>
+  
+<script setup>
   import { ref, onMounted, onUnmounted } from 'vue';
   import router from '@/router';
   

@@ -18,7 +18,7 @@ celery -A app.celery_app worker -l info
 python backend/app.py
 ```
 
-4. frontend (vue CLI)  -->
+4. frontend (vue CLI)  --> (got to frontend)
 
 ```
 npm run dev

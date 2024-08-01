@@ -50,6 +50,12 @@
 
   const submitInfo = async () =>{
 
+    //check if the fields are empty
+    if (!name.value || !username.value || !email.value || !password.value) {
+      showAlert('Please fill in all the fields', 'alert-danger');
+      return;
+    }
+
     try{
 
       const response = await axios.post('http://localhost:5000/register', {

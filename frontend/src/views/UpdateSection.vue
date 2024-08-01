@@ -24,6 +24,11 @@
           </div>
         </div>
       </div>
+      <transition name="fade">
+      <div v-if="message" class="message error">
+        {{ message }}
+      </div>
+    </transition>
     </div>
   </template>
   
@@ -39,9 +44,20 @@
   const router = useRouter();
   const route = useRoute();
   const sectionId = ref(route.params.id);
+  const message= ref('');
+  const messageType = ref('info'); 
 
 
     const updateSection = async () => {
+    //check if the fields are empty
+        if (!title.value || !description.value) {
+          message.value = 'Please fill in all the fields.';
+          messageType.value = 'error';
+          setTimeout(() => {
+            message.value = '';
+          }, 3000);
+          return;
+        }
         try {
         const token = localStorage.getItem('token');
         const response = await axios.put(`http://localhost:5000/api/${sectionId.value}/update_section`, {
@@ -60,6 +76,12 @@
           router.push({ name: 'UAView' });
         } else {
         console.error(error);
+        message.value=response.data.message;
+        messageType.value = 'error';
+        setTimeout(() => {
+            message.value = '';
+        }, 3000);
+
         }
     }
     };
@@ -124,5 +146,40 @@
     background-color: forestgreen;
     border-color: forestgreen;
   }
+
+  .message {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  width: fit-content;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  transition: opacity 0.5s ease;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
+
   </style>
   

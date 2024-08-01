@@ -5,7 +5,7 @@
           <h5>{{ book?.title }}</h5>
           <button @click="closeModal" class="closeModal">Close</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body  ">
           <div class="modal-content">
             <div class="modal-image">
               <img :src="getImageUrl(book?.image)" alt="Book Cover" @error="handleImageError" />
@@ -23,7 +23,7 @@
   
   <script setup>
   import { ref, watch, computed } from 'vue';
-  import { defineProps, defineEmits } from 'vue';
+  // import { defineProps, defineEmits } from 'vue';
   
   const props = defineProps({
     visible: {
@@ -72,6 +72,8 @@
   max-width: 90%;
   display: flex;
   flex-direction: column;
+  max-height: 80vh; /* Ensure the modal doesn't exceed 80% of the viewport height */
+  overflow: hidden; /* Prevent overflow */
 }
 
 .modal-header {
@@ -83,30 +85,34 @@
 .modal-body {
   margin-top: 10px;
   display: flex;
+  overflow: auto;
+  max-height: 70vh; /* Set a max height to control the scrollable area */
 }
 
 .modal-content {
   display: flex;
   width: 100%;
   flex-direction: row;
+  border: 0cap;
 }
 
 .modal-image {
   width: 30%;
   padding-right: 20px;
   margin-left: 15px;
-  margin-top: 15px;
+  margin-top: 8px;
 }
 
 .modal-image img {
   width: 100%;
   height: auto;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .modal-details {
   width: 70%;
+  overflow-wrap: break-word; /* Ensure long words break to fit within the container */
 }
 
 .modal-details p {
@@ -138,6 +144,7 @@
     margin-top: 15px;
     margin-bottom: 15px;
     padding: 0 20px;
+    overflow-wrap: break-word; /* Ensure long words break to fit within the container */
 }
 
 </style>

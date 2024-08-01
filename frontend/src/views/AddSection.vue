@@ -44,7 +44,9 @@
       const response = await axios.post('http://localhost:5000/api/create_section', {
         title: title.value,
         image: image.value,
-        description: description.value
+        description: description.value,
+        
+
       }, {
         headers: {
           Authorization: `Bearer ${token}`

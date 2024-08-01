@@ -12,7 +12,7 @@
             <div style="margin-left: 290px;">
               <button type="button" class="btn btn-outline-primary" @click="navigateTo('UpdateBook', book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">Update Book</button>
               <button type="button" class="btn btn-outline" @click="deleteBook(book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">Delete Book</button>
-              <button type="button" class="btn btn-outline" @click="navigateTo(book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">View Issued Users</button>
+              <button type="button" class="btn btn-outline" @click="navigateTo('IssuedUsers', book.id)" style="background-color: #3887BE; margin-right: 30px; border-radius: 5px; color:white">View Issued Users</button>
             </div>
           </div>
         </div>
@@ -143,7 +143,7 @@ const navigateTo = (routeName, id = null) => {
 
     .sectionviewbook{
       text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: nowrap;  
   overflow: hidden;
     }
 

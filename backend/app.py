@@ -3,6 +3,9 @@ from Applications.database import db
 from Applications.api import api, init_app
 from Applications.config import jwt, cache, cors
 from werkzeug.security import generate_password_hash
+from Applications.worker import celery_init_app
+from Applications.tasks import check_visited_users, generate_monthly_report
+from celery.schedules import crontab
 
 app = None
 
@@ -13,9 +16,10 @@ def create_app():
     app.config['JWT_SECRET_KEY']='super-secret' # Change this in your code
     jwt.init_app(app)
     cors.init_app(app, resources={r"/*": {"origins": "*"}})
+
     
     # Set the upload folder configuration
-    app.config['UPLOAD_FOLDER'] = 'C:\\Users\\pulki\\OneDrive\\Documents\\MAD 1 Proj\\static\\images'
+    app.config['UPLOAD_FOLDER'] = 'C:\\Users\\pulki\\OneDrive\\Documents\\export_check'
 
     # Set the cache configuration
 
@@ -34,10 +38,29 @@ def create_app():
     @app.route('/static/images/<path:filename>')
     def serve_image(filename):
         return send_from_directory('static/images', filename)
+    
+    # Initialize the worker
+    celery_app=celery_init_app(app)
 
-    return app
+    return app, celery_app
 
-app = create_app()
+app, celery_app = create_app()
+
+@celery_app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    
+    # Executes every day at 6:00 PM (18:00)
+    sender.add_periodic_task(crontab(hour=18, minute=0),
+                             check_visited_users.s(), 
+                             name='Check visited users every day at 6 PM'
+                             )
+    
+    # Executes on the first day of every month at midnight (00:00)
+    sender.add_periodic_task(crontab(day_of_month=1, hour=0, minute=0), 
+                             generate_monthly_report.s(), 
+                             name='Generate monthly report on the first day of every month at midnight'
+                             )
+
 
 from Applications.controller import *  # Models are imported in controller.py and controllers are imported here
 

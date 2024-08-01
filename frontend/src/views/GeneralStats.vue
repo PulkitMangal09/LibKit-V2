@@ -28,8 +28,14 @@
             <h2>Rejected Requests</h2>
             <p>{{ stats.total_rejected_requests }}</p>
           </div>
+          <button @click="exportcsv()" class="export-btn" >Export Details</button>
         </div>
       </div>
+      <transition name="fade">
+      <div v-if="message" class="message">
+        {{ message }}
+      </div>
+    </transition>
     </div>
   </template>
   
@@ -41,10 +47,37 @@
   
   const stats = ref({});
   const router = useRouter();
+  const message= ref('');
+  const messageType = ref('info'); // Use this to differentiate between success and error messages
 
   const navigateTo = (routeName) => {
   router.push({ name: routeName });
     };
+
+  const exportcsv = () => {
+    axios.get('http://localhost:5000/export_request', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => {
+      console.log(response.data);
+      message.value = response.data.message;
+      messageType.value = 'success'; 
+      setTimeout(() => {
+        message.value = '';
+      }, 3000);
+
+    })
+    .catch(error => {
+      console.log(error);
+      message.value = 'Failed to export the details. Please try again later.';
+      messageType.value = 'error';
+      setTimeout(() => {
+        message.value = '';
+      }, 3000);
+    });
+  };
   
   onMounted(() => {
     axios.get('http://localhost:5000/stats', {
@@ -139,5 +172,71 @@
   .rejected-requests {
     background: linear-gradient(135deg, #9c27b0, #673ab7);
   }
-  </style>
+
+  .message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  width: fit-content;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  transition: opacity 0.5s ease;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
+
+.export-btn {
+  padding: 10px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4c8eaf, #afc34a);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  margin: 10px;
+  margin-left: auto;
+  margin-right:auto;
+}
+
+.export-btn:hover {
+  background: linear-gradient(135deg, #4c8eaf, #7cb342);
+  transform: scale(1.05);
+}
+
+.export-btn:active {
+  background: linear-gradient(135deg, #2c6d1f, #689f38);
+  transform: scale(1.02);
+}
+
+.export-btn:disabled {
+  background: #c8e6c9;
+  color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+</style>
   

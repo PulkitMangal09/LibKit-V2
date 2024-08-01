@@ -1,0 +1,38 @@
+server details for Mad II
+
+1. redis  -->  
+
+```
+redis-server
+```
+
+2. celery worker -->  (go to backend)
+
+```
+celery -A app.celery_app worker -l info
+```
+
+3. backend (flask) -->
+
+```
+python backend/app.py
+```
+
+4. frontend (vue CLI)  -->
+
+```
+npm run dev
+```
+
+5. mail hog  --> (http://localhost:8025/)
+
+```
+~/go/bin/MailHog
+``` 
+
+6. celery beat  -->  (go to backend)
+
+```
+celery -A app.celery_app beat -l info
+
+```

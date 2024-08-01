@@ -5,6 +5,7 @@ from Applications.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from Applications.config import cache
+from datetime import datetime
 
 def role_required(role):
     def decorator(func):
@@ -19,6 +20,14 @@ def role_required(role):
     return decorator
 
 
+def calculate_days_difference(date_str1, date_str2):
+    date_format = "%B %d, %Y"
+    date1 = datetime.strptime(date_str1, date_format)
+    date2 = datetime.strptime(date_str2, date_format)
+    date_difference = date2 - date1
+    return date_difference.days
+
+
 def init_routes(app):
     @app.route('/login', methods=['POST'])
     def login():
@@ -30,7 +39,9 @@ def init_routes(app):
         if user:
             if check_password_hash(user.password, password):
                 jwt_token=create_access_token(identity={'id': user.id, 'type': user.type})
-                return jsonify({'message': 'Login Successful', 'token': jwt_token, 'user_type': user.type})
+                user.last_login = datetime.now().strftime("%B %d, %Y")
+                db.session.commit()
+                return jsonify({'message': 'Login Successful', 'token': jwt_token, 'user_type': user.type, 'user_id': user.id, 'user_name': user.username})
             else:
                 return jsonify({'message':'Invalid Password'}), 401
         else:
@@ -64,7 +75,6 @@ def init_routes(app):
     @jwt_required()
     def user():
         identity = get_jwt_identity()
-        print(identity['type'])
         books=Books.query.all()
         all_books={}
         i=1
@@ -171,6 +181,7 @@ def init_routes(app):
         db.session.add(new_feedback)
 
         request.status='approved'
+        request.issued_date=datetime.now().strftime("%B %d, %Y")
         db.session.commit()
         cache.clear()
         return jsonify({'message': 'Request approved successfully'})
@@ -187,11 +198,19 @@ def init_routes(app):
 
 
     @app.route('/user_approved_books', methods=['GET'])  #User Dashboard Approved Book View
-    @cache.cached(timeout=50)
+    # @cache.cached(timeout=50)
     @jwt_required()
     def approved_requests():
         user_id = get_jwt_identity()['id']
         requests = Request.query.filter_by(user_id=user_id, status='approved').all()
+        current_date = datetime.now().strftime("%B %d, %Y")
+        if requests:
+            for request in requests: 
+                if calculate_days_difference(request.issued_date, current_date) >= 7:
+                    request.status='revoked'
+
+        db.session.commit()
+
         all_requests = []
         for request in requests:
             book = Books.query.get(request.book_id)
@@ -217,8 +236,9 @@ def init_routes(app):
         book_id=request.book_id
         feedback=Feedback.query.filter_by(book_id=request.book_id , borrow_user_id=get_jwt_identity()['id']).first()
         feedback.phase='returned'
-        request.status='return'
-        db.session.delete(request)
+        request.status='returned'
+        request.return_date=datetime.now().strftime("%B %d, %Y")
+        # db.session.delete(request)
         db.session.commit()
         cache.clear()
         return jsonify({'message': 'Book returned successfully', 'book_id':book_id })  #User will go to feedback page after returning the book
@@ -282,8 +302,9 @@ def init_routes(app):
         request=Request.query.get(id)
         feedback=Feedback.query.filter_by(book_id=request.book_id, borrow_user_id=request.user_id).first()
         feedback.phase='revoked'
-        request.status='returned'
-        db.session.delete(request)
+        request.status='revoked'
+        request.return_date=datetime.now().strftime("%B %d, %Y")
+        # db.session.delete(request)
         db.session.commit()
         cache.clear()
         return jsonify({'message': 'Request revoked successfully'})

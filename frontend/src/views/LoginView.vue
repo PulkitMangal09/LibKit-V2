@@ -47,6 +47,7 @@
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user_type', response.data.user_type);
         localStorage.setItem('user_id', response.data.user_id);
+        localStorage.setItem('username', response.data.user_name);
         if (response.data.user_type === 'admin'){
           router.push('/admin_dash');
         } else {

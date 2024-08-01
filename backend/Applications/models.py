@@ -7,6 +7,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(120), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+    last_login = db.Column(db.String(80), nullable=True)
     type = db.Column(db.String(80), default='user')
     requests = db.relationship('Request', backref='user')
     feedbacks = db.relationship('Feedback', backref='borrowed_feedbacks')
@@ -36,6 +37,8 @@ class Request(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
     book_id = db.Column(db.Integer(), db.ForeignKey('books.id'), nullable=False)
     status = db.Column(db.String(80), nullable=False,default='pending')
+    issued_date = db.Column(db.String(80))
+    return_date = db.Column(db.String(80))
 
 
 class Feedback(db.Model):
